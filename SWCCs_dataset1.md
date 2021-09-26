@@ -21,14 +21,14 @@ hor.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method
                                          "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
                                          "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
                                          "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
-                                         "keywords_total_porosity","source_db"  )
+                                         "keywords_total_porosity","source_db","location_accuracy_min", "location_accuracy_max")
 ## target structure:
 col.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                          "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
                                          "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
                                          "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
                                          "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
-                                         "keywords_total_porosity","source_db")
+                                         "keywords_total_porosity","source_db","location_accuracy_min", "location_accuracy_max")
 ```
 
   - `layer_id`: Unique id for layer or horizon  
@@ -57,7 +57,9 @@ col.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method
     water content in vol/vol -`field_head_m`: Field measured\_suction
     head in m -`field_wrc`: Field measured\_volumetric water content in
     vol/vol -`keywords_total_porosity`: Reference to porosity  
-    \-`source_db`: Reference to the database
+    \-`source_db`: Reference to the database  
+    \-`location_accuracy_min`: Minimum value of location accuracy
+    -`location_accuracy_max`: Maximum value of location accuracy
 
 #### *AFSPDB*
 
@@ -85,7 +87,7 @@ afspdb.profiles$location_accuracy_min = ifelse(afspdb.profiles$location_accuracy
 afspdb.profiles$location_accuracy_max = NA
 afspdb.layers <- read.dbf("C:/Users/guptasu.D/Downloads/AfSIS_SPDB/AfSP012Qry_Layers.dbf", as.is=TRUE)
 ## select columns of interest:
-afspdb.sel.prof <- afspdb.profiles[,c("ProfileID", "T_Year", "X_LonDD", "Y_LatDD"),]
+ afspdb.sel.prof <- afspdb.profiles[,c("ProfileID", "T_Year", "X_LonDD", "Y_LatDD", "location_accuracy_min", "location_accuracy_max"),]
 ## Convert to weight content
 #summary(afspdb.layers$BlkDens)
 ## select layers
@@ -159,26 +161,37 @@ afspdb.WRC_only_wide_or$keywords_total_porosity<- NA
 afspdb.WRC_only_wide_or$method<-"Pressure plate"
 afspdb.WRC_only_wide_or$method_keywords<- NA
 ##merge the target variables
+##merge the target variables
 afspdb.WRC<- afspdb.WRC_only_wide_or[, c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                          "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
                                          "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
                                          "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
                                          "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
-                                         "keywords_total_porosity","source_db"),]
+                                         "keywords_total_porosity","source_db","location_accuracy_min", "location_accuracy_max"),]
 #options(scipen = 999)
 #options(digits=1)
 afspdb.WRC$lab_head_m<- as.numeric(afspdb.WRC$lab_head_m)
+
 #saveRDS(afspdb.WRC, "E:/Soil_points/INT/USDA_NCSS/hydrosprops.AfSPDB_SG.rds")
-afspdb.WRC<-afspdb.WRC[!is.na(afspdb.WRC$lab_wrc),]
+#afspdb.WRC<-afspdb.WRC[!is.na(afspdb.WRC$lab_wrc),]
 #write.csv(afspdb.WRC, "C:/Users/guptasu.D/Downloads/AfSIS_SPDB/AFSPDB_wrc_database.csv")
 #write.csv(afspdb.WRC, "E:/Soil_points/INT/USDA_NCSS/AFSPDB_wrc_database.csv")
-
-## we downloaded the dataset and provided the soil texture classes based on USDA triangle
 afspdb.WRC1<- read.csv("C:/Users/guptasu.D/Downloads/AfSIS_SPDB/AFSPDB_wrc_database.csv")
-dim(afspdb.WRC1)
+locations<- afspdb.WRC[, c("layer_id","location_accuracy_min", "location_accuracy_max")]
+locations1 <-locations %>%
+  mutate(layer_id = layer_id) %>% # or maybe dmy, depending on your date format
+  group_by(layer_id) %>%
+  arrange(desc(layer_id)) %>%
+  summarise_all(funs(na.omit(.)[1]))
+afspdb.WRC2<- merge(afspdb.WRC1,locations1, by = "layer_id")
+dim(afspdb.WRC2)
 ```
 
-    ## [1] 55224    29
+    ## [1] 55224    31
+
+``` r
+#table(afspdb.WRC1$tex_psda)
+```
 
 #### *EGRPR*
 
@@ -252,14 +265,15 @@ EGRPR.WRC_only_wide_or$lab_wrc<-EGRPR.WRC_only_wide_or$theta_vol
 EGRPR.WRC_only_wide_or$source_db = "Russia_EGRPR"
 EGRPR.WRC_only_wide_or$method<- "unknown"
 EGRPR.WRC_only_wide_or$method_keywords = NA
+EGRPR.WRC_only_wide_or$location_accuracy_min<- NA
+EGRPR.WRC_only_wide_or$location_accuracy_max = NA
 ##merge the target variables
  EGRPR.WRC<- EGRPR.WRC_only_wide_or[, c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                         "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
                                         "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
                                         "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
                                         "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
-                                        "keywords_total_porosity","source_db"),]
-EGRPR.WRC$lab_head_m<- EGRPR.WRC$lab_head_m/10
+                                        "keywords_total_porosity","source_db","location_accuracy_min","location_accuracy_max"),]
 EGRPR.WRC1<- EGRPR.WRC %>% filter( layer_id %in% c("152 _ 105", "35 _ 87.5", "8 _ 36","305 _ 35"))
 EGRPR.WRC<-EGRPR.WRC[!EGRPR.WRC$layer_id%in% EGRPR.WRC1$layer_id,]
 EGRPR.WRC2<- stack(by(EGRPR.WRC$lab_wrc, EGRPR.WRC$layer_id, FUN=function(x) sum(!is.na(x))))
@@ -277,7 +291,7 @@ EGRPR.WRC<-rbind(EGRPR.WRC,EGRPR.WRC_R1)
 dim(EGRPR.WRC)
 ```
 
-    ## [1] 5665   29
+    ## [1] 5665   31
 
 #### *WOSIS*
 
@@ -293,6 +307,9 @@ Table11<- read.table("C:/Users/guptasu.D/Downloads/WoSIS_2019_September/wosis_20
 Table12<- read.table("C:/Users/guptasu.D/Downloads/WoSIS_2019_September/wosis_201909_layers_chemical.tsv", sep = '\t', header = TRUE,fill = TRUE)
 Table13<- read.table("C:/Users/guptasu.D/Downloads/WoSIS_2019_September/wosis_201909_layers_physical.tsv", sep = '\t', header = TRUE,fill = TRUE,na.strings= c("999", "NA", " ", ""))
 Table14<- read.table("C:/Users/guptasu.D/Downloads/WoSIS_2019_September/wosis_201909_profiles.tsv", sep = '\t', header = TRUE,fill = TRUE)
+Table14$location_accuracy_id<- Table14$geom_accuracy*10000000
+Table14$location_accuracy_min<- 0
+Table14$location_accuracy_max<- (Table14$location_accuracy_id)/100
 chemical<- Table12[, c("profile_layer_id","orgc_value_avg", "phaq_value_avg" )]
 pp<-  merge(Table13, Table14, by="profile_id")
 WRC_table2<-pp[,c("profile_id","upper_depth","profile_layer_id", "upper_depth", "latitude", "longitude",
@@ -301,7 +318,7 @@ WRC_table2<-pp[,c("profile_id","upper_depth","profile_layer_id", "upper_depth", 
                                 "wv1500_value_avg", "wv0200_value_avg","wv0500_value_avg", "wv0006_value_avg","wv0033_value_avg",
                                 "country_id", "country_name", "wg0100_value_avg", "wg0010_value_avg", "wg1500_value_avg"
                                 ,"wg0200_value_avg", "wg0033_value_avg"
-                                , "wg0500_value_avg", "wg0006_value_avg")]
+                                , "wg0500_value_avg", "wg0006_value_avg","location_accuracy_min","location_accuracy_max")]
 ##for gravimetric_water content
 WOSIS.layers_wide <- gather(WRC_table2, condition, measurement, wg0100_value_avg: wg0006_value_avg, factor_key=TRUE)
 WOSIS.layers_wide_or<- WOSIS.layers_wide[order(WOSIS.layers_wide$profile_layer_id),]
@@ -387,35 +404,47 @@ Final_WOSIS_dataset$longitude_decimal_degrees<- Final_WOSIS_dataset$longitude
 Final_WOSIS_dataset$method<- "Pressure plate"
 Final_WOSIS_dataset$method_keywords<- NA
 ##merge the target variables
+##merge the target variables
 WOSIS.WRC<- Final_WOSIS_dataset[, c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                     "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
                                     "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
                                     "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
                                     "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
-                                    "keywords_total_porosity","source_db"),]
+                                    "keywords_total_porosity","source_db","location_accuracy_min","location_accuracy_max"),]
+
+
 WOSIS.WRC_1<- subset(WOSIS.WRC, lab_wrc>1)
 WOSIS.WRC<- WOSIS.WRC[!WOSIS.WRC$layer_id %in% WOSIS.WRC_1$layer_id,]
 WOSIS.WRC1<- WOSIS.WRC %>% filter( layer_id %in% c(598429, 598597, 598598, 598599, 601063, 598626, 598674, 599538, 604376, 604823, 604825,
-                                                                 611743, 615464, 620345, 634556, 641757, 642584, 642592, 642606, 642608, 642800, 642801,
-                                                                 642876, 642877, 654385, 656325, 656328, 656329, 656372, 656376, 658972, 658979, 658993,
-                                                                 658993, 659093, 660343, 660352, 660832, 660833, 660834, 660835, 660836, 660837, 660839,
-                                                                 660842, 660843, 660844, 660845, 660846, 660848, 660849,660912, 660859, 660864, 660868,
-                                                                 660943, 660951, 660954, 660955, 660957, 660957, 660960, 660963, 660967, 660968,660973,
-                                                                 660976, 660982, 660983, 660985, 660986, 660988, 686016, 686017, 686018, 686020, 813517,
-                                                                 813537,813603, 814143, 816561, 817793, 598680,598683))
+                                                   611743, 615464, 620345, 634556, 641757, 642584, 642592, 642606, 642608, 642800, 642801,
+                                                   642876, 642877, 654385, 656325, 656328, 656329, 656372, 656376, 658972, 658979, 658993,
+                                                   658993, 659093, 660343, 660352, 660832, 660833, 660834, 660835, 660836, 660837, 660839,
+                                                   660842, 660843, 660844, 660845, 660846, 660848, 660849,660912, 660859, 660864, 660868,
+                                                   660943, 660951, 660954, 660955, 660957, 660957, 660960, 660963, 660967, 660968,660973,
+                                                   660976, 660982, 660983, 660985, 660986, 660988, 686016, 686017, 686018, 686020, 813517,
+                                                   813537,813603, 814143, 816561, 817793, 598680,598683))
 WOSIS.WRC<-WOSIS.WRC[!WOSIS.WRC$layer_id%in% WOSIS.WRC1$layer_id,]
 #write.csv(WOSIS.WRC,"P:/guptasu/Andreas_ksat_data/nonsensical_data_review/WOSIS.WRC.csv" )
 #saveRDS(WOSIS.WRC, "E:/Soil_points1/INT/fwdwaterretentiondatafromkssl/KSSL_soil.lab_WRC/hydrosprops.WOSIS_SG.rds")
 WOSIS.WRC1<-read.csv("P:/guptasu/Andreas_ksat_data/nonsensical_data_review/WOSIS.WRC.csv")
 
+locations<- WOSIS.WRC[, c("layer_id","location_accuracy_min", "location_accuracy_max")]
+
+locations1 <-locations %>%
+  mutate(layer_id = layer_id) %>% # or maybe dmy, depending on your date format
+  group_by(layer_id) %>%
+  arrange(desc(layer_id)) %>%
+  summarise_all(funs(na.omit(.)[1]))
 ## more SWCCs to remove
+
+WOSIS.WRC1<- merge(WOSIS.WRC1,locations1, by = "layer_id")
 
 WOSIS.WRC2<-WOSIS.WRC1 %>% filter(layer_id %in% c(599571, 614531, 629141,630746,630749, 630750, 630753, 630754, 630851, 30852, 656398, 661164, 630854, 633012, 633020, 633832,634548, 643310,647166, 647706, 647707, 672093, 647738, 647760, 647826,647827, 647828, 647829,647830, 655178, 656341, 656366, 656367, 656368, 656369, 656370, 656371,56373, 656374, 656375, 656377, 656378, 656379, 656380, 656381, 656282,854572,840527, 834053, 647825, 630748, 636268,636274, 827713,656308, 818625))
 WOSIS.WRC1<-WOSIS.WRC1[!WOSIS.WRC1$layer_id%in% WOSIS.WRC2$layer_id,]
 dim(WOSIS.WRC1)
 ```
 
-    ## [1] 18186    29
+    ## [1] 18186    31
 
 #### *Australia\_CSIRO*
 
@@ -1026,76 +1055,83 @@ Aulstr_WRC<-Aulstr_WRC[!Aulstr_WRC$layer_id%in% Aulstr_WRC1$layer_id,]
 Aulstr_WRC<- read.csv("P:/guptasu/Andreas_ksat_data/nonsensical_data_review/Aulstr_WRC_TOM.csv")
 Aulstr_WRC$hzn_top<- Aulstr_WRC$hzn_top*100
 Aulstr_WRC$hzn_bot<- Aulstr_WRC$hzn_bot*100
+Aulstr_WRC$location_accuracy_min<- NA
+Aulstr_WRC$location_accuracy_max<- NA
 dim(Aulstr_WRC)
 ```
 
-    ## [1] 5984   29
+    ## [1] 5984   31
 
 #### *ETH imported data from literature*
 
 ``` r
 ETH_literature<- readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Dataset_SWCCs_Literature", guess_max = 10000)
 ETH_literature1<- ETH_literature %>% filter( layer_id %in% c("kool_105", "kool_106","kool_108","kool_109","kool_123","kool_142","kool_176",
-                                                                           "kool_19","kool_197","kool_198","kool_32","kool_33","kool_55","kool_60",
-                                                                           "kool_66","kool_68","kool_199","kool_200","kool_204","kool_24","kool_121"))
+                                                             "kool_19","kool_197","kool_198","kool_32","kool_33","kool_55","kool_60",
+                                                             "kool_66","kool_68","kool_199","kool_200","kool_204","kool_24","kool_121"))
 ETH_literature<-ETH_literature[!ETH_literature$layer_id%in% ETH_literature1$layer_id,]
+##Holten dataset
 Holten<- readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Holten", guess_max = 10000)
 Holten1<- Holten %>% filter( layer_id %in% c("Holten1767", "Holten1216","Holten1497","Holten1651", "Holten1828"))
 Holten<-Holten[!Holten$layer_id%in% Holten1$layer_id,]
-
 ## convert gravimetric to volumetric by converting BD33 kPa to dry bulk density
 Holten$GWC<- Holten$lab_wrc/Holten$db_33
 holten_30kpa<- subset(Holten,Holten$lab_head_m==3)
 holten_30kpa$db_new<- as.numeric(holten_30kpa$db_33/(1+(holten_30kpa$lab_wrc)))
-holten_2<- holten_30kpa[,c(1,31)]
+holten_2<- holten_30kpa[,c(1,33)]
 Holten<- merge(Holten,holten_2, by = "layer_id")
 Holten$lab_wrc<- Holten$GWC*Holten$db_new
 Holten$db_od<- Holten$db_new
-Holten<- Holten[,c(1:29)]
+Holten<- Holten[,c(1:31)]
+##UNSODA
 Unsoda<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "UNSODA",guess_max = 10000)
 Unsoda1<- Unsoda %>% filter( layer_id %in% c("UNSODA1161", "UNSODA1162","UNSODA1166","UNSODA1165", "UNSODA1460","UNSODA3050"))
 Unsoda<-Unsoda[!Unsoda$layer_id%in% Unsoda1$layer_id,]
+##HYBRAS dataset
 hybras<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "HYBRAS",guess_max = 10000)
 hybras1<- hybras %>% filter( layer_id %in% c("HYBRAS1008", "HYBRAS1015","HYBRAS1018","HYBRAS1019", "HYBRAS1021","HYBRAS1022","HYBRAS1025",
-                                                  "HYBRAS1027","HYBRAS1032","HYBRAS1039","HYBRAS1042","HYBRAS525","HYBRAS994","HYBRAS996","HYBRAS998"))
+                                             "HYBRAS1027","HYBRAS1032","HYBRAS1039","HYBRAS1042","HYBRAS525","HYBRAS994","HYBRAS996","HYBRAS998"))
 hybras<-hybras[!hybras$layer_id%in% hybras1$layer_id,]
+##SWISS dataset
 Swiss_data<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Swiss_database",guess_max = 10000)
+##Zalf dataset
 Zalf<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Zalf_database",guess_max = 10000)
+##Belgiam dataset
 Belgiam<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Vereecken_database",guess_max = 10000)
 Florida<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Florida_database",guess_max = 10000)
 Florida1<-Florida %>% filter( layer_id %in% c("Florida_ksat_data_2197", "Florida_ksat_data_226","Florida_ksat_data_2262","Florida_ksat_data_227",
-                                                  "Florida_ksat_data_2322","Florida_ksat_data_2326","Florida_ksat_data_2327","Florida_ksat_data_2430",
-                                                      "Florida_ksat_data_2452","Florida_ksat_data_2458","Florida_ksat_data_2459","Florida_ksat_data_2460",
-                                                      "Florida_ksat_data_2461","Florida_ksat_data_2480","Florida_ksat_data_2481","Florida_ksat_data_2482",
-                                                      "Florida_ksat_data_1135","Florida_ksat_data_1190","Florida_ksat_data_1191","Florida_ksat_data_1227",
-                                                      "Florida_ksat_data_1238","Florida_ksat_data_1298","Florida_ksat_data_1318","Florida_ksat_data_1413",
-                                                      "Florida_ksat_data_1458","Florida_ksat_data_1460","Florida_ksat_data_1461","Florida_ksat_data_1467",
-                                                      "Florida_ksat_data_1483","Florida_ksat_data_1520","Florida_ksat_data_1713","Florida_ksat_data_1721",
-                                                      "Florida_ksat_data_1915","Florida_ksat_data_197","Florida_ksat_data_2154","Florida_ksat_data_2155",
-                                                      "Florida_ksat_data_2183","Florida_ksat_data_2483","Florida_ksat_data_2484","Florida_ksat_data_2516",
-                                                      "Florida_ksat_data_2516","Florida_ksat_data_2571","Florida_ksat_data_2595","Florida_ksat_data_2596",
-                                                      "Florida_ksat_data_2602","Florida_ksat_data_2609","Florida_ksat_data_2627","Florida_ksat_data_2628",
-                                                        "Florida_ksat_data_269","Florida_ksat_data_270","Florida_ksat_data_301","Florida_ksat_data_305",
-                                                      "Florida_ksat_data_306","Florida_ksat_data_3127","Florida_ksat_data_3165","Florida_ksat_data_3208",
-                                                      "Florida_ksat_data_3209","Florida_ksat_data_3329","Florida_ksat_data_3335","Florida_ksat_data_3395",
-                                                      "Florida_ksat_data_3714","Florida_ksat_data_3717","Florida_ksat_data_3802","Florida_ksat_data_3803",
-                                                      "Florida_ksat_data_3815","Florida_ksat_data_4019","Florida_ksat_data_4035","Florida_ksat_data_4192",
-                                                      "Florida_ksat_data_4200","Florida_ksat_data_4215","Florida_ksat_data_4244","Florida_ksat_data_4270",
-                                                      "Florida_ksat_data_4314","Florida_ksat_data_4324","Florida_ksat_data_4325","Florida_ksat_data_4328",
-                                                      "Florida_ksat_data_4446","Florida_ksat_data_4489","Florida_ksat_data_4492","Florida_ksat_data_4493",
-                                                      "Florida_ksat_data_4510","Florida_ksat_data_4512","Florida_ksat_data_4513","Florida_ksat_data_4520",
-                                                      "Florida_ksat_data_4526","Florida_ksat_data_4833","Florida_ksat_data_4913","Florida_ksat_data_4917",
-                                                      "Florida_ksat_data_4529","Florida_ksat_data_5371","Florida_ksat_data_5415","Florida_ksat_data_558",
-                                                      "Florida_ksat_data_575","Florida_ksat_data_5751","Florida_ksat_data_5753","Florida_ksat_data_5754",
-                                                        "Florida_ksat_data_5758","Florida_ksat_data_5757","Florida_ksat_data_581","Florida_ksat_data_620",
-                                                      "Florida_ksat_data_625","Florida_ksat_data_626","Florida_ksat_data_627","Florida_ksat_data_628",
-                                                        "Florida_ksat_data_638","Florida_ksat_data_640","Florida_ksat_data_641","Florida_ksat_data_642",
-                                                        "Florida_ksat_data_643","Florida_ksat_data_65","Florida_ksat_data_653","Florida_ksat_data_654",
-                                                        "Florida_ksat_data_655","Florida_ksat_data_670","Florida_ksat_data_671","Florida_ksat_data_672",
-                                                        "Florida_ksat_data_675","Florida_ksat_data_676","Florida_ksat_data_677","Florida_ksat_data_678",
-                                                        "Florida_ksat_data_740","Florida_ksat_data_741","Florida_ksat_data_746","Florida_ksat_data_747",
-                                                        "Florida_ksat_data_843","Florida_ksat_data_844","Florida_ksat_data_845","Florida_ksat_data_926",
-                                                      "Florida_ksat_data_927","Florida_ksat_data_928","Florida_ksat_data_1317","Florida_ksat_data_3715"))
+                                              "Florida_ksat_data_2322","Florida_ksat_data_2326","Florida_ksat_data_2327","Florida_ksat_data_2430",
+                                              "Florida_ksat_data_2452","Florida_ksat_data_2458","Florida_ksat_data_2459","Florida_ksat_data_2460",
+                                              "Florida_ksat_data_2461","Florida_ksat_data_2480","Florida_ksat_data_2481","Florida_ksat_data_2482",
+                                              "Florida_ksat_data_1135","Florida_ksat_data_1190","Florida_ksat_data_1191","Florida_ksat_data_1227",
+                                              "Florida_ksat_data_1238","Florida_ksat_data_1298","Florida_ksat_data_1318","Florida_ksat_data_1413",
+                                              "Florida_ksat_data_1458","Florida_ksat_data_1460","Florida_ksat_data_1461","Florida_ksat_data_1467",
+                                              "Florida_ksat_data_1483","Florida_ksat_data_1520","Florida_ksat_data_1713","Florida_ksat_data_1721",
+                                              "Florida_ksat_data_1915","Florida_ksat_data_197","Florida_ksat_data_2154","Florida_ksat_data_2155",
+                                              "Florida_ksat_data_2183","Florida_ksat_data_2483","Florida_ksat_data_2484","Florida_ksat_data_2516",
+                                              "Florida_ksat_data_2516","Florida_ksat_data_2571","Florida_ksat_data_2595","Florida_ksat_data_2596",
+                                              "Florida_ksat_data_2602","Florida_ksat_data_2609","Florida_ksat_data_2627","Florida_ksat_data_2628",
+                                              "Florida_ksat_data_269","Florida_ksat_data_270","Florida_ksat_data_301","Florida_ksat_data_305",
+                                              "Florida_ksat_data_306","Florida_ksat_data_3127","Florida_ksat_data_3165","Florida_ksat_data_3208",
+                                              "Florida_ksat_data_3209","Florida_ksat_data_3329","Florida_ksat_data_3335","Florida_ksat_data_3395",
+                                              "Florida_ksat_data_3714","Florida_ksat_data_3717","Florida_ksat_data_3802","Florida_ksat_data_3803",
+                                              "Florida_ksat_data_3815","Florida_ksat_data_4019","Florida_ksat_data_4035","Florida_ksat_data_4192",
+                                              "Florida_ksat_data_4200","Florida_ksat_data_4215","Florida_ksat_data_4244","Florida_ksat_data_4270",
+                                              "Florida_ksat_data_4314","Florida_ksat_data_4324","Florida_ksat_data_4325","Florida_ksat_data_4328",
+                                              "Florida_ksat_data_4446","Florida_ksat_data_4489","Florida_ksat_data_4492","Florida_ksat_data_4493",
+                                              "Florida_ksat_data_4510","Florida_ksat_data_4512","Florida_ksat_data_4513","Florida_ksat_data_4520",
+                                              "Florida_ksat_data_4526","Florida_ksat_data_4833","Florida_ksat_data_4913","Florida_ksat_data_4917",
+                                              "Florida_ksat_data_4529","Florida_ksat_data_5371","Florida_ksat_data_5415","Florida_ksat_data_558",
+                                              "Florida_ksat_data_575","Florida_ksat_data_5751","Florida_ksat_data_5753","Florida_ksat_data_5754",
+                                              "Florida_ksat_data_5758","Florida_ksat_data_5757","Florida_ksat_data_581","Florida_ksat_data_620",
+                                              "Florida_ksat_data_625","Florida_ksat_data_626","Florida_ksat_data_627","Florida_ksat_data_628",
+                                              "Florida_ksat_data_638","Florida_ksat_data_640","Florida_ksat_data_641","Florida_ksat_data_642",
+                                              "Florida_ksat_data_643","Florida_ksat_data_65","Florida_ksat_data_653","Florida_ksat_data_654",
+                                              "Florida_ksat_data_655","Florida_ksat_data_670","Florida_ksat_data_671","Florida_ksat_data_672",
+                                              "Florida_ksat_data_675","Florida_ksat_data_676","Florida_ksat_data_677","Florida_ksat_data_678",
+                                              "Florida_ksat_data_740","Florida_ksat_data_741","Florida_ksat_data_746","Florida_ksat_data_747",
+                                              "Florida_ksat_data_843","Florida_ksat_data_844","Florida_ksat_data_845","Florida_ksat_data_926",
+                                              "Florida_ksat_data_927","Florida_ksat_data_928","Florida_ksat_data_1317","Florida_ksat_data_3715"))
 Florida<-Florida[!Florida$layer_id%in% Florida1$layer_id,]
 #write.csv(Florida,"E:/Andreas_ksat_data/nonsensical_data_review/Florida_wrc.csv")
 Australian<-readxl::read_excel("C:/Users/guptasu.D/Downloads/WRC_dataset_2021.xlsx", sheet = "Australian",guess_max = 10000)
@@ -1106,12 +1142,12 @@ eth.tbl1<- eth.tbl[eth.tbl$lab_wrc<=1,]
 dim(eth.tbl1)
 ```
 
-    ## [1] 112904     29
+    ## [1] 112904     31
 
 ## *Bind the data*
 
 ``` r
-WRC_dataset<-rbind(afspdb.WRC1,EGRPR.WRC,Aulstr_WRC,eth.tbl1, WOSIS.WRC1)
+WRC_dataset<-rbind(afspdb.WRC2,EGRPR.WRC,Aulstr_WRC,eth.tbl1, WOSIS.WRC1)
 WRC_dataset$locationid<- paste(WRC_dataset$latitude_decimal_degrees,"_", WRC_dataset$longitude_decimal_degrees)
 WRC_dataset<-WRC_dataset[!is.na(WRC_dataset$latitude_decimal_degrees),]
 WRC_dataset<-WRC_dataset[!is.na(WRC_dataset$lab_wrc),]
@@ -1128,16 +1164,6 @@ Curves_with_thetas_2<-WRC_dataset[WRC_dataset$layer_id %in% Curves_with_less_0.2
 Curves_with_thetas_not_wetend<-WRC_dataset[!WRC_dataset$layer_id %in% Curves_with_less_0.2$layer_id,]
 Bulk_density<- Curves_with_thetas_not_wetend[!is.na(Curves_with_thetas_not_wetend$db_od),]
 samples_with_bulk_density<- rbind(Curves_with_thetas_2,Bulk_density)
-samples_with_bulk_density1 <-samples_with_bulk_density %>%
-  mutate(layer_id = layer_id) %>% 
-  group_by(layer_id) %>%
-  arrange(desc(layer_id)) %>%
-  summarise_all(funs(na.omit(.)[1]))
-dim(samples_with_bulk_density1)
-```
 
-    ## [1] 15174    30
-
-``` r
 ## These SWCCs are fitted using the 'soilhypfit' R package and estimated the vG parameters. Few SWCCs are discarded due to large RMSE (greater than 1 m3/m3). The total SWCCs presented in this database are 15,153. 
 ```
