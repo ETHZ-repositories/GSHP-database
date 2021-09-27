@@ -1,0 +1,135 @@
+---
+title: "Global soil hydraulic properties (GSHP) database"
+author: "Surya Gupta, Andreas Papritz, Peter Lehmann, Tom Hengl, Sara Bonetti, Dani Or"
+date: 
+output: 
+  github_document:
+    toc: true
+---
+
+
+Plots of soil water characteristics data set. Total curves = 15153
+
+```{r cars}
+library(ggplot2)
+
+WRC<- read.csv("C:/Users/guptasu.D/Downloads/WRC_dataset_surya_et_al_2021_final.csv")
+
+dim(WRC)
+
+colnames(WRC)
+
+unique(WRC$source_db)
+
+unique(WRC$site_key)
+
+```
+
+
+## Bulk density (g/cm3) vs Data sources
+
+```{r}
+options(warn=-1)
+
+ggplot(WRC, aes(x=source_db, y=db_od)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Organic carbon (%) vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## Sand content (%) vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=sand_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Silt content (%) vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=silt_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Clay content (%) vs Data sources
+
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=clay_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## pH vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=ph_h2o)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Field measured saturated hydraulic conductivity (cm/day)  vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=ksat_field)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Lab measured saturated hydraulic conductivity (cm/day)  vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=ksat_lab)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Porosity (%) vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=porosity_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## VG shape parameter (1/m) vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=alpha)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+
+## VG shape parameter vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=n)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Saturated water content (m3/m3) vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=thetas)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Residual water content (m3/m3) vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=thetar)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+## Root mean square error (m3/m3) vs Data sources
+
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=RMSE)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+
