@@ -21,8 +21,6 @@ colnames(WRC)
 
 unique(WRC$source_db)
 
-unique(WRC$site_key)
-
 ```
 
 
