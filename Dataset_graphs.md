@@ -75,45 +75,6 @@ unique(WRC$source_db)
     ## [13] "Australian_database" "HYBRAS"              "Australia_SSM"      
     ## [16] "UNSODA"              "Belgium_database"    "ZALF_database"
 
-``` r
-unique(WRC$site_key)
-```
-
-    ##  [1] "Stolbovoy_et_al_2016"        "Bates_et_al_2020"           
-    ##  [3] "AL-Kayssi_A_W_2021"          "CSIRO_2020"                 
-    ##  [5] "BAMBRA_A_ 2016"              "Wickland_et_al_2006"        
-    ##  [7] "Leenaars_et_al_2014"         "Bhushan and Sharma_2005"    
-    ##  [9] "Macinnis-NG_et_al_2010"      "Richard and Lüscher_1983_87"
-    ## [11] "Ng_C. W. W_2020"             "Zhang et al_2018"           
-    ## [13] "Tobon_et_al_2011"            "Medina_et_al_2002"          
-    ## [15] "Sulaeman_et_al_2021"         "Grunwald_2020"              
-    ## [17] "Forrest_JA_1985"             "Mosquera_et_al_2021"        
-    ## [19] "Li et al_2012"               "Holten_1968"                
-    ## [21] "Ottoni_et_al_2018"           "Ismail_1991"                
-    ## [23] "Basile_et_al_1997"           "Elliott and Price_2020"     
-    ## [25] "Kassaye_et_al_2021"          "Jha_et_al_2010"             
-    ## [27] "Xia_et_al_2017"              "Toriyama_et_al_2011"        
-    ## [29] "Karup_et_al_2017"            "Seki_et_al_2010"            
-    ## [31] "Kool_1954"                   "Xing et al_2018"            
-    ## [33] "Li et al_2011"               "Oliveira et al_2019"        
-    ## [35] "Lozano et al_2014"           "Eden_et_al_2020"            
-    ## [37] "Lowe_et_al_2019"             "Cooper_et_al_2017"          
-    ## [39] "Mikko_Jauhiainen_2004"       "Abid and Lal et al_2009"    
-    ## [41] "Nano_et_al_2016"             "Are_et_al_2018"             
-    ## [43] "Guzman et al_2019"           "Bescansa et al_2006"        
-    ## [45] "Macvicar_et_al_2019"         "Dlapa_et_al_2020"           
-    ## [47] "Quang and Jansson_2012"      "Wang_et_al_2017"            
-    ## [49] "Asswad_et_al_1993"           "Kumar_et_al_2010"           
-    ## [51] "Konyai_et_al_2006"           "Saha and Kukal_2013"        
-    ## [53] "Noguchi_et_al_1997"          "Simmons_L_A_2014"           
-    ## [55] "Smeettem_Gregory_1996"       "Mondal_et_al_2016"          
-    ## [57] "McBeath_et_al_2010"          "Talat_et_al_2020"           
-    ## [59] "Pan_et_al_2019"              "Thakur_et_al_2010"          
-    ## [61] "Glab et al_2020"             "Tyagi_et_al_2013"           
-    ## [63] "Nemes_et_al_2001"            "Vereecken_et_al_2017"       
-    ## [65] "Schindler_and_Müller_2017"   "Li_et_al_2019"              
-    ## [67] "Nyamangara_et_al_2001"
-
 ## Bulk density (g/cm3) vs Data sources
 
 ``` r
