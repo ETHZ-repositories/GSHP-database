@@ -3,29 +3,27 @@ Global soil hydraulic properties (GSHP) database
 Surya Gupta, Andreas Papritz, Peter Lehmann, Tom Hengl, Sara Bonetti,
 Dani Or
 
-  - [Bulk density (g/cm3) vs Data
-    sources](#bulk-density-gcm3-vs-data-sources)
-  - [Organic carbon (%) vs Data
-    sources](#organic-carbon--vs-data-sources)
-  - [Sand content (%) vs Data sources](#sand-content--vs-data-sources)
-  - [Silt content (%) vs Data sources](#silt-content--vs-data-sources)
-  - [Clay content (%) vs Data sources](#clay-content--vs-data-sources)
+  - [Bulk density vs Data sources](#bulk-density-vs-data-sources)
+  - [Organic carbon vs Data sources](#organic-carbon-vs-data-sources)
+  - [Sand content vs Data sources](#sand-content-vs-data-sources)
+  - [Silt content vs Data sources](#silt-content-vs-data-sources)
+  - [Clay content vs Data sources](#clay-content-vs-data-sources)
   - [pH vs Data sources](#ph-vs-data-sources)
-  - [Field measured saturated hydraulic conductivity (cm/day) vs Data
-    sources](#field-measured-saturated-hydraulic-conductivity-cmday-vs-data-sources)
-  - [Lab measured saturated hydraulic conductivity (cm/day) vs Data
-    sources](#lab-measured-saturated-hydraulic-conductivity-cmday-vs-data-sources)
-  - [Porosity (%) vs Data sources](#porosity--vs-data-sources)
-  - [VG shape parameter (1/m) vs Data
-    sources](#vg-shape-parameter-1m-vs-data-sources)
-  - [VG shape parameter vs Data
+  - [Field measured saturated hydraulic conductivity vs Data
+    sources](#field-measured-saturated-hydraulic-conductivity-vs-data-sources)
+  - [Lab measured saturated hydraulic conductivity vs Data
+    sources](#lab-measured-saturated-hydraulic-conductivity-vs-data-sources)
+  - [Porosity vs Data sources](#porosity-vs-data-sources)
+  - [vG shape parameter vs Data
     sources](#vg-shape-parameter-vs-data-sources)
-  - [Saturated water content (m3/m3) vs Data
-    sources](#saturated-water-content-m3m3-vs-data-sources)
-  - [Residual water content (m3/m3) vs Data
-    sources](#residual-water-content-m3m3-vs-data-sources)
-  - [Root mean square error (m3/m3) vs Data
-    sources](#root-mean-square-error-m3m3-vs-data-sources)
+  - [vG shape parameter vs Data
+    sources](#vg-shape-parameter-vs-data-sources-1)
+  - [Saturated water content vs Data
+    sources](#saturated-water-content-vs-data-sources)
+  - [Residual water content vs Data
+    sources](#residual-water-content-vs-data-sources)
+  - [Root mean square error vs Data
+    sources](#root-mean-square-error-vs-data-sources)
 
 Plots of soil water characteristics data set. Total curves = 15153
 
@@ -69,50 +67,48 @@ unique(WRC$source_db)
 ```
 
     ##  [1] "Russia_EGRPR"        "WOSIS"               "ETH_Literature"     
-    ##  [4] "Australia_DD"        "Australia_CL"        "Australia_GYC"      
-    ##  [7] "AfSPDB"              "swiss_database"      "Australia_Morph"    
-    ## [10] "Australia_CSIRO_LW"  "Australia_RAALS"     "Florida_database"   
-    ## [13] "Australian_database" "HYBRAS"              "Australia_SSM"      
-    ## [16] "UNSODA"              "Belgium_database"    "ZALF_database"
+    ##  [4] "Australian_database" "AfSPDB"              "Swiss_database"     
+    ##  [7] "Florida_database"    "HYBRAS"              "UNSODA"             
+    ## [10] "Belgium_database"    "ZALF_database"
 
-## Bulk density (g/cm3) vs Data sources
+## Bulk density vs Data sources
 
 ``` r
 options(warn=-1)
 
-ggplot(WRC, aes(x=source_db, y=db_od)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=db_od)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("db_od [", g/cm^{3},"]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-## Organic carbon (%) vs Data sources
+## Organic carbon vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("oc [%]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-## Sand content (%) vs Data sources
+## Sand content vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=sand_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=sand_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("sand_tot_psa_percent [%]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-## Silt content (%) vs Data sources
+## Silt content vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=silt_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=silt_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("silt_tot_psa_percent [%]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-## Clay content (%) vs Data sources
+## Clay content vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=clay_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=clay_tot_psa_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("clay_tot_psa_percent [%]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
@@ -120,71 +116,71 @@ ggplot(WRC, aes(x=source_db, y=clay_tot_psa_percent)) + geom_boxplot()+ theme(ax
 ## pH vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=ph_h2o)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=ph_h2o)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ph_h2o [-]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-## Field measured saturated hydraulic conductivity (cm/day) vs Data sources
+## Field measured saturated hydraulic conductivity vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=ksat_field)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=ksat_field)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ksat_field [cm/day]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
-## Lab measured saturated hydraulic conductivity (cm/day) vs Data sources
+## Lab measured saturated hydraulic conductivity vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=ksat_lab)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=ksat_lab)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ksat_lab [cm/day]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-## Porosity (%) vs Data sources
+## Porosity vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=porosity_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=porosity_percent)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("porosity_percent [%]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
-## VG shape parameter (1/m) vs Data sources
+## vG shape parameter vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=alpha)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=alpha)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("alpha [1/m]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-## VG shape parameter vs Data sources
+## vG shape parameter vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=n)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=n)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("n [-]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
-## Saturated water content (m3/m3) vs Data sources
+## Saturated water content vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=thetas)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=thetas)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("thetas [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
-## Residual water content (m3/m3) vs Data sources
+## Residual water content vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=thetar)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=thetar)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("thetar [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
-## Root mean square error (m3/m3) vs Data sources
+## Root mean square error vs Data sources
 
 ``` r
-ggplot(WRC, aes(x=source_db, y=RMSE)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(WRC, aes(x=source_db, y=RMSE)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("RMSE [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
 ```
 
 ![](Dataset_graphs_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
