@@ -37,7 +37,7 @@ ggplot(WRC, aes(x=source_db, y=db_od)) + geom_boxplot()+ theme(axis.text.x = ele
 
 ```{r}
 
-ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("oc [%]")), x = expression(paste("source_db [-]" )))
+ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("oc [% carbon of dry mass]")), x = expression(paste("source_db [-]" )))
 
 ```
 
