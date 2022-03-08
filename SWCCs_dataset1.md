@@ -1165,5 +1165,5 @@ Curves_with_thetas_not_wetend<-WRC_dataset[!WRC_dataset$layer_id %in% Curves_wit
 Bulk_density<- Curves_with_thetas_not_wetend[!is.na(Curves_with_thetas_not_wetend$db_od),]
 samples_with_bulk_density<- rbind(Curves_with_thetas_2,Bulk_density)
 
-## These SWCCs are fitted using the 'soilhypfit' R package and estimated the vG parameters. Few SWCCs are discarded due to large RMSE (greater than 1 m3/m3). The total SWCCs presented in this database are 15,153. 
+## These SWCCs are fitted using the 'soilhypfit' R package and estimated the vG parameters. Few SWCCs are discarded due to large RMSE (greater than 1 m3/m3). The total SWCCs presented in this database are 15,259. 
 ```
