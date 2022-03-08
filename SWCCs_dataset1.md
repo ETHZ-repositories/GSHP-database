@@ -18,23 +18,23 @@ Dani Or
 site.names = c("site_key", "longitude_decimal_degrees", "latitude_decimal_degrees")
 hor.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                          "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
-                                         "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
-                                         "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
-                                         "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
+                                         "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa",
+                                         "silt_tot_psa","clay_tot_psa","ph_h2o","ksat_field","ksat_lab",
+                                         "porosity","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
                                          "keywords_total_porosity","source_db","location_accuracy_min", "location_accuracy_max")
 ## target structure:
 col.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method","method_keywords",
                                          "latitude_decimal_degrees","longitude_decimal_degrees","hzn_desgn","hzn_top",
-                                         "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa_percent",
-                                         "silt_tot_psa_percent","clay_tot_psa_percent","ph_h2o","ksat_field","ksat_lab",
-                                         "porosity_percent","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
+                                         "hzn_bot","db_33","db_od","oc","tex_psda","sand_tot_psa",
+                                         "silt_tot_psa","clay_tot_psa","ph_h2o","ksat_field","ksat_lab",
+                                         "porosity","WG_33kpa","lab_head_m","lab_wrc","field_head_m","field_wrc",
                                          "keywords_total_porosity","source_db","location_accuracy_min", "location_accuracy_max")
 ```
 
   - `layer_id`: Unique id for layer or horizon  
     \-`disturbed_undisturbed`: disturbed or undisturbed sample
     -`profile_id`: Unique id for soil profile  
-    \-`site_key`: Source of data  
+    \-`reference`: Source of data  
     \-`method`: Method used to analyze the data -`method_keywords`:
     Comments on the methods if applicable  
     \-`latitude_decimal_degrees`: Ranges up to +90 degrees down to -90
@@ -45,13 +45,13 @@ col.names = c("layer_id","disturbed_undisturbed","profile_id","site_key","method
     density\_33kpa in g/cm3 -`db_od`: Bulk density\_dry in g/cm3
     -`oc_percent`: Soil organic carbon content in % -`tex_psda`: Soil
     texture classes based on USDA  
-    \-`sand_tot_psa_percent`: Mass of soil particle, \> 0.05 and \< 2 mm
-    in % -`silt_tot_psa_percent`: Mass of soil particles, \> 0.002 and
-    \< 0.05 mm in % -`clay_tot_psa_percent`: Mass of soil particles, \<
-    0.002 mm in % -`ph_h2o`: Soil acidity —- -`ksat_field`: Soil
+    \-`sand_tot_psa`: Mass of soil particle, \> 0.05 and \< 2 mm
+    in dekagram/kg -`silt_tot_psa`: Mass of soil particles, \> 0.002 and
+    \< 0.05 mm in dekagram/kg -`clay_tot_psa`: Mass of soil particles, \<
+    0.002 mm in dekagram/kg -`ph_h2o`: Soil reaction —- -`ksat_field`: Soil
     saturated hydraulic conductivity from field in cm/day -`ksat_lab`:
     Soil saturated hydraulic conductivity from lab in cm/day
-    -`porosity_percent`: Porosity in % -`WG_33kpa`: Gravimetric water
+    -`porosity`: Porosity in m3/m3 -`WG_33kpa`: Gravimetric water
     content at 33kpa in weight/weight -`lab_head_m`: Lab
     measured\_suction head in m -`lab_wrc Lab`: measured\_volumetric
     water content in vol/vol -`field_head_m`: Field measured\_suction
@@ -247,7 +247,7 @@ EGRPR.WRC_only_wide_or$profile_id<- EGRPR.WRC_only_wide_or$SOIL_ID
 EGRPR.WRC_only_wide_or$site_key<-"Russian Federation"
 EGRPR.WRC_only_wide_or$hzn_top<-EGRPR.WRC_only_wide_or$HORTOP
 EGRPR.WRC_only_wide_or$hzn_bot<-EGRPR.WRC_only_wide_or$HORBOT
-EGRPR.WRC_only_wide_or$db_od<-NA
+EGRPR.WRC_only_wide_or$db_od<-DVOL
 EGRPR.WRC_only_wide_or$tex_psda<-NA
 EGRPR.WRC_only_wide_or$sand_tot_psa_percent<-EGRPR.WRC_only_wide_or$SNDPPT
 EGRPR.WRC_only_wide_or$silt_tot_psa_percent<-EGRPR.WRC_only_wide_or$SLTPPT
@@ -1165,5 +1165,5 @@ Curves_with_thetas_not_wetend<-WRC_dataset[!WRC_dataset$layer_id %in% Curves_wit
 Bulk_density<- Curves_with_thetas_not_wetend[!is.na(Curves_with_thetas_not_wetend$db_od),]
 samples_with_bulk_density<- rbind(Curves_with_thetas_2,Bulk_density)
 
-## These SWCCs are fitted using the 'soilhypfit' R package and estimated the vG parameters. Few SWCCs are discarded due to large RMSE (greater than 1 m3/m3). The total SWCCs presented in this database are 15,153. 
+## These SWCCs are fitted using the 'soilhypfit' R package and estimated the vG parameters. Few SWCCs are discarded due to large RMSE (greater than 1 m3/m3). The total SWCCs presented in this database are 15,259. 
 ```
