@@ -1,0 +1,137 @@
+---
+title: "Global soil hydraulic properties database (GSHP): a compilation of soil water characteristics data"
+author: "Surya Gupta, Andreas Papritz, Peter Lehmann, Tom Hengl, Sara Bonetti, Dani Or"
+date: 
+output: html_document
+---
+
+  
+Plots of soil water characteristics data set. Total curves = 15259
+
+```{r cars}
+library(ggplot2)
+
+WRC<- read.csv("C:/Users/guptasu.D/Documents/GSHP manuscript/WRC_dataset_surya_et_al_2021_final.csv")
+
+dim(WRC)
+
+colnames(WRC)
+
+unique(WRC$source_db)
+
+```
+
+
+## Bulk density vs Data sources
+
+```{r}
+options(warn=-1)
+
+ggplot(WRC, aes(x=source_db, y=db_od)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("db_od [", g/cm^{3},"]")), x = expression(paste("source_db [-]" )))
+
+```
+
+## Organic carbon vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=oc)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("oc [% carbon of dry mass]")), x = expression(paste("source_db [-]" )))
+
+```
+
+## Sand content vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=sand_tot_psa)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("sand_tot_psa [dekagram/kg]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Silt content vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=silt_tot_psa)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("silt_tot_psa [dekagram/kg]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Clay content vs Data sources
+
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=clay_tot_psa)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("clay_tot_psa [dekagram/kg]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## pH vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=ph_h2o)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ph_h2o [-]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Field measured saturated hydraulic conductivity  vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=ksat_field)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ksat_field [cm/day]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Lab measured saturated hydraulic conductivity vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=ksat_lab)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("ksat_lab [cm/day]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Porosity vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=porosity)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("porosity [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## vG shape parameter vs Data sources
+
+```{r}
+
+ggplot(WRC, aes(x=source_db, y=alpha)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("alpha [1/m]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+
+## vG shape parameter vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=n)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("n [-]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Saturated water content vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=thetas)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("thetas [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+## Residual water content vs Data sources
+
+```{r}
+ggplot(WRC, aes(x=source_db, y=thetar)) + geom_boxplot()+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+labs( y= expression(paste("thetar [", m^{3}/m^{3},"]")), x = expression(paste("source_db [-]" )))
+
+
+```
+
+
+
+
